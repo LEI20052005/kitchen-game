@@ -1,0 +1,25 @@
+# Cocos Creator 缓存与本地配置（不要提交）
+library/
+temp/
+local/
+build/
+profiles/
+native/
+.creator/
+
+# 依赖与系统文件
+node_modules/
+.DS_Store
+Thumbs.db
+
+# 大体积备份原图（不进仓库，本地保留即可）
+_素材备份_2048/
+_原图备份_有水印/
+
+# 素材工作目录：未压缩原图（约 68MB），与 assets/UI/ 重复且不属于 Cocos 工程
+# 注意写成 /UI/（只匹配根目录），否则会把 assets/UI/ 一起忽略掉
+/UI/
+
+# 素材脚本的临时输出
+_tools/_test/
+_tools/_test_out/

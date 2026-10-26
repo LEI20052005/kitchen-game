@@ -1,0 +1,8 @@
+{
+    "name":  "kitchen-game",
+    "type":  "2d",
+    "uuid":  "d1e6a14f-e260-49bd-b96c-7c964b3f29fb",
+    "creator":  {
+                    "version":  "3.8.8"
+                }
+}
