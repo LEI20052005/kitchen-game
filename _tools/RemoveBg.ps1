@@ -9,16 +9,30 @@
 #   5. 紧贴背景的边缘像素按颜色距离做 alpha 柔化，避免白边/锯齿
 #
 # 【用法】
-#   powershell -File RemoveBg.ps1 -SrcDir 原图目录 -OutDir 输出目录
-#   默认：备份原图目录 -> UI 目录（覆盖）
+#   powershell -File RemoveBg.ps1 -SrcDir 原图目录 [-OutDir 输出目录]
+#   目录写相对路径即可，默认相对仓库根目录：
+#     输入  _原图备份_有水印/   →   输出  UI/
+#   源目录不存在时直接报错提示；输出目录不存在时自动创建
 # =============================================================
 param(
-  [string]$SrcDir = 'D:\厨房小游戏\_原图备份_有水印',
-  [string]$OutDir = 'D:\厨房小游戏\UI',
+  [string]$SrcDir = (Join-Path $PSScriptRoot '..\_原图备份_有水印'),
+  [string]$OutDir = (Join-Path $PSScriptRoot '..\UI'),
   [int]$Tolerance = 32,        # 全局背景容差（颜色距离）
   [int]$WatermarkTol = 100     # 右下角水印区域容差
 )
 $ErrorActionPreference = 'Stop'
+
+# ---------- 路径校验（相对 -> 绝对） ----------
+$SrcDir = [System.IO.Path]::GetFullPath($SrcDir)
+$OutDir = [System.IO.Path]::GetFullPath($OutDir)
+
+if (-not (Test-Path -LiteralPath $SrcDir -PathType Container)) {
+  throw "找不到原图目录：$SrcDir`n请用 -SrcDir 指定，例如：`n  powershell -File RemoveBg.ps1 -SrcDir <原图目录> -OutDir <输出目录>"
+}
+if (-not (Test-Path -LiteralPath $OutDir -PathType Container)) {
+  New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
+  Write-Output ("已创建输出目录：{0}" -f $OutDir)
+}
 
 # ---------- C# 核心算法（比 PowerShell 快几百倍） ----------
 $cs = @"
